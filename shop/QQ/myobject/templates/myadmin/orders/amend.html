@@ -1,0 +1,28 @@
+{% extends "myadmin/base.html" %}
+{% block mainbody %}  
+ 
+               
+    <h3>
+        修改订单状态
+    </h3>
+    <form id="edit-profile" action="{% url 'myadmin_amendinserts' status.id %}" class="form-horizontal" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="input01">状态：</label>
+                <div class="controls">
+                    <select name="status" id="">
+                        <option {% if status.status == 0 %} selected {% endif %} value="0" >新订单</option>
+                        <option  {% if status.status == 1 %} selected {% endif %} value="1">已发货</option>
+                        <option {% if status.status == 2 %} selected {% endif %} value="2">已收货</option>
+                        <option  {% if status.status == 3 %} selected {% endif %} value="3">无效订单</option>
+                    </select>
+                    <!-- <input type="text" name="name" class="input-xlarge" id="input01" value="{{ user.name }}" /> -->
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">保存</button> <button type="reset" class="btn">重置</button>
+            </div>
+        </fieldset>
+    </form>
+{% endblock %}

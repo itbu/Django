@@ -1,0 +1,12 @@
+{% extends "myweb/users/base.html" %}
+
+{% block mainbody %}
+	 
+    <div style="text-align: center;">
+    	<h2>操作信息提示</h2>
+    	<h4>{{ info }}</h4>
+    	<a href="{% url 'login' %}">登录</a>
+    	<a href="{% url 'register' %}">注册</a>
+    </div>
+    
+{% endblock %}

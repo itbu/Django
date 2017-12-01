@@ -1,0 +1,133 @@
+
+<!-- 继承父模板 -->
+{% extends 'myweb/base.html' %}
+<!-- 静态资源加载 -->
+{% load static from staticfiles %}
+
+{% block "mylink"%}
+  <link rel="stylesheet" type="text/css" href="{% static 'myweb/css/list.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'myweb/css/list-app.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'myweb/css/order.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'myweb/css/order-app.css' %}">
+{% endblock%}
+
+{% block "mainbody" %}
+   <!-- 主内容区域 -->
+ <div class="mainbody order">
+      <div class="container">
+         <!-- 面包屑导航 -->
+	 <div class="crumbs col-xs-12 col-sm-12">
+	     <ol class="breadcrumb">
+	         <li class="hidden-xs hidden-sm"><a href="#">首页</a></li>
+	         <li class="hidden-xs hidden-sm"><a href="#">我的商城</a></li>
+	         <li class="active">我的订单</li>
+	        </ol>
+	    </div>
+	<!-- 面包屑导航 E-->
+	<div class="main clearfix">
+	   <!-- 左侧导航 -->
+	     <div class="left-nav f-fl col-md-4 hidden-xs hidden-sm">
+	        <div class="nav-main">
+		<a href="javascript:;" class="type-title">
+		 <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>订单中心</a>
+		<a href="order.html" class="ml active" >我的订单</a>
+		<a href="#" class="ml " >我的回购单</a>
+		<a href="#" class="ml " >我的意外保</a>
+		<a href="javascript:;" class="type-title">
+		<span class="glyphicon glyphicon-user" aria-hidden="true"></span>个人中心</a>
+		<a href="#" class="ml " >地址管理</a>
+		<a href="#" class="ml " >我的收藏</a>
+		<a href="#" class="ml " >消息提醒</a>
+		<a href="#" class="ml " >建议反馈</a>
+	      </div>
+	</div>
+	<!-- 右侧内容展示 -->
+	<div class="right-content f-fr col-md-8 col-xs-12 col-sm-12">
+	   <div class="order-main">
+	      <div class="type-tab-btn">
+	          <a href="javascript:;" class="allOrder active col-20" data-type="-1">全部订单</a>
+	          <i class="line hidden-xs hidden-sm">|</i>
+		<a class="waitPay col-20" href="javascript:;" data-type="0">待付款<span class="amount _actAmount"></span></a>
+		<i class="line hidden-xs hidden-sm">|</i>
+		<a class="waitDeliver col-20" href="javascript:;" data-type="1">待发货</a><i class="line hidden-xs hidden-sm">|</i>
+		<a class="hasDeliver col-20" href="javascript:;" data-type="2">已发货</a><i class="line hidden-xs hidden-sm">|</i>
+		<a class="other col-20" href="javascript:;" data-type="99">其他</a>
+	       </div><br>
+	       <div class="list-head hidden-xs hidden-sm">
+	             <ul class="clearfix">
+	                 <li class="w50">
+	                     <select id="checkType" class="check-type">
+	                         <option value="0">近三个月的订单</option>
+	                          <option value="1">全部订单</option>
+	                      </select>
+	                       订单明细
+	                  </li>
+	            </ul>
+	       </div>
+		<div class="" style="text-align:center;background: #fff;">
+		<h2>收获地址</h2><br>
+		<!-- 表单提交 -->
+		<form action="{% url 'ordersconfirm' %}" method="post">
+		      {% csrf_token %}			
+		        收件人：<input type="text" name="linkman" value="{{ request.session.vipuser.name }}">
+		       地址: <input type="text" name="address" value="{{ request.session.vipuser.address }}">
+		       邮编：<input type="text" name="code" value="{{ request.session.vipuser.code }}">
+		       电话：<input type="text" name="phone" value="{{ request.session.vipuser.phone }}"><br/><br/>
+		       总金额：<label for="exampleInputFile" style="font-size:20px;color: red;" >￥{{ request.session.total }}元</label><br>
+		      <input type="submit" class="btn btn-info"  value="提交"/>
+		       <input type="reset" class="btn btn-danger"  value="重置"/>
+		   </form>
+		</div>
+	         <br><br>
+	       <div id="tableList" class="type-contain ui-load-container">
+	<!-- 购物清单信息列表 -->
+	<div class="order-merchant-list">
+	    <div class="order-merchant">
+	    <table class="order-merchant-body" border="1">
+	        <tbody>
+	        	<tr>
+	        	    <td class="order-col-id col-md-1 hidden-xs hidden-sm">ID</td>
+	        	    <td class="order-col-pricename col-md-3 hidden-xs hidden-sm">图片</td>
+	        	    <td class="order-col-name col-md-3 hidden-xs hidden-sm">商品</td>
+	        	    <td class="order-col-price col-md-2 hidden-xs hidden-sm">单价(元)</td>
+	        	    <td class="order-col-number col-md-2 hidden-xs hidden-sm">数量</td>
+	        	    <td class="order-col-total col-md-1 hidden-xs hidden-sm">小计(元)</td>
+	        	 </tr>
+		{% for goods in request.session.orderlist.values %}
+		  <tr class="order-product" id="">
+			 <td class="order-col-id col-md-1 hidden-xs hidden-sm">
+			   {{ goods.id }}
+			  </td>
+			 <td class="order-col-pricename col-md-3 col-xs-4 col-sm-4">
+			  <a href="" class="" target="_blank">
+				<img src="/static/goods/s_{{ goods.picname }}" class="" >
+			  </a>
+			 </td>
+			 <td class="order-col-name col-md-3 col-xs-8 col-sm-8">
+				{{ goods.goods }}
+			 </td>
+			  <td class="order-col-price col-md-2 hidden-xs hidden-sm">
+				<p><span class="">{{ goods.price }}</span></p>
+			  </td>
+			 <td class="order-col-number col-md-2 hidden-xs hidden-sm">
+					{{ goods.m }}
+				</td>
+			  <td class="order-col-total col-md-1 hidden-xs hidden-sm">
+			{% widthratio goods.price 1 goods.m %}
+			 </td>
+			 </tr>
+			{% endfor %}
+			</tbody>
+		   </table>
+		  </div>
+		</div>
+	        <!-- 购物清单信息列表 E-->
+                 </div>
+               </div>
+            </div>
+          </div>
+      </div>	
+</div>
+ <!-- 主内容区域 E-->
+{% endblock %}   
+   
